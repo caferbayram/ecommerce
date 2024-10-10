@@ -26,20 +26,15 @@ public class CartServiceImpl implements CartService {
     private final CartProductService cartProductService;
 
     public static final String NOT_FOUND = "Cart not found with id: ";
-    public static final String NOT_FOUND_CUSTOMER = "Cart not found with customer id: ";
 
     @Override
+    @Transactional
     public CartDto getById(String id) {
-        return repository.findById(id)
-                .map(this::toDto)
+        var cart = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + id));
-    }
-
-    @Override
-    public CartDto getByCustomerId(String customerId) {
-        return repository.findByCustomerId(customerId)
-                .map(this::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_CUSTOMER + customerId));
+        return toDto(repository.save(toEntity(CartDto.builder()
+                .products(cartProductService.getAllByCartId(cart.getId()))
+                .build(), cart)));
     }
 
     @Override

@@ -15,11 +15,6 @@ public class CartController {
         return CartResponse.toResponse(service.getById(id));
     }
 
-    @GetMapping("/customer/{customerId}")
-    public CartResponse getByCustomerId(@PathVariable String customerId) {
-        return CartResponse.toResponse(service.getByCustomerId(customerId));
-    }
-
     @PutMapping("/{id}")
     public CartResponse update(@PathVariable String id, @RequestBody CartRequest request) {
         return CartResponse.toResponse(service.update(id, request.toDto()));
