@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = Product.TABLE)
 public class Product extends BaseEntity {
-    public static final String TABLE = "products";
+    public static final String TABLE = "product";
     public static final String COL_NAME = "name";
     public static final String COL_SKU = "sku";
     public static final String COL_PRICE = "price";

@@ -1,11 +1,8 @@
 package com.enoca.ecommerce.domain.customer.impl;
 
-import com.enoca.ecommerce.domain.order.impl.Order;
 import com.enoca.ecommerce.library.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -15,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = Customer.TABLE)
 public class Customer extends BaseEntity {
-    public static final String TABLE = "customers";
+    public static final String TABLE = "customer";
     public static final String COL_NAME = "name";
     public static final String COL_SURNAME = "surname";
     public static final String COL_EMAIL = "email";
@@ -36,7 +33,4 @@ public class Customer extends BaseEntity {
 
     @Column(name = COL_ADDRESS)
     private String address;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
 }

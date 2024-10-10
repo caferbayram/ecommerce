@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = Cart.TABLE)
 public class Cart extends BaseEntity {
-    public static final String TABLE = "carts";
+    public static final String TABLE = "cart";
     public static final String COL_TOTAL_PRICE = "total_price";
     public static final String COL_CUSTOMER_ID = "customer_id";
 

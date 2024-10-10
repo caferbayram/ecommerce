@@ -12,7 +12,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = CartProduct.TABLE)
 public class CartProduct extends BaseEntity {
-    public static final String TABLE = "cart_products";
+    public static final String TABLE = "cart_product";
     public static final String COL_CART_ID = "cart_id";
     public static final String COL_PRODUCT_ID = "product_id";
     public static final String COL_QUANTITY = "quantity";

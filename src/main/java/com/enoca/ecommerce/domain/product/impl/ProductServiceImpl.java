@@ -1,10 +1,12 @@
 package com.enoca.ecommerce.domain.product.impl;
 
+import com.enoca.ecommerce.domain.order.order.api.event.SubtractStockEvent;
 import com.enoca.ecommerce.domain.product.api.ProductDto;
 import com.enoca.ecommerce.domain.product.api.ProductService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,15 @@ public class ProductServiceImpl implements ProductService {
         return repository.findAllById(productIds).stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    @EventListener
+    @Transactional
+    public void subtractStock(SubtractStockEvent event) {
+        var product = repository.findById(event.productId())
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + event.productId()));
+        product.setStock(product.getStock() - event.quantity());
+        repository.save(product);
     }
 
     private void checkProductExist(String sku) {

@@ -1,12 +1,10 @@
 package com.enoca.ecommerce.domain.customer.web;
 
 import com.enoca.ecommerce.domain.customer.api.CustomerDto;
-import com.enoca.ecommerce.domain.order.api.OrderDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +17,6 @@ public class CustomerResponse {
     private String email;
     private String phoneNumber;
     private String address;
-    private List<OrderDto> orders;
 
     public static CustomerResponse toResponse(CustomerDto dto) {
         return CustomerResponse.builder()
@@ -31,7 +28,6 @@ public class CustomerResponse {
                 .email(dto.getEmail())
                 .phoneNumber(dto.getPhoneNumber())
                 .address(dto.getAddress())
-                .orders(dto.getOrders())
                 .build();
     }
 }

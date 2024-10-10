@@ -25,9 +25,7 @@ public class CartProductServiceImpl implements CartProductService {
     @Transactional
     public List<CartProductDto> updateCartProdcuts(String cartId, List<CartProductDto> products) {
         repository.deleteAll(repository.findAllByCartId(cartId));
-        return toDtoList(products.stream()
-                .map(product -> repository.save(toEntity(new CartProduct(), product, cartId)))
-                .toList());
+        return toDtoList(repository.saveAll(toEntityList(products, cartId)));
     }
 
     @Override
@@ -36,11 +34,23 @@ public class CartProductServiceImpl implements CartProductService {
         repository.deleteAll(repository.findAllByCartId(cartId));
     }
 
-    private CartProduct toEntity(CartProduct cartProduct, CartProductDto dto, String cartId) {
-        cartProduct.setProductId(productService.get(dto.getProduct().getId()).getId());
-        cartProduct.setQuantity(dto.getQuantity());
-        cartProduct.setCartId(cartId);
-        return cartProduct;
+    private List<CartProduct> toEntityList(List<CartProductDto> cartProducts, String cartId) {
+        var products = productService.getAllById(cartProducts.stream()
+                .map(cartProduct -> cartProduct.getProduct().getId())
+                .toList());
+        return cartProducts.stream()
+                .map(product -> {
+                    var cartProduct = new CartProduct();
+                    cartProduct.setProductId(products.stream()
+                            .filter(p -> p.getId().equals(product.getProduct().getId()))
+                            .findFirst()
+                            .orElseThrow()
+                            .getId());
+                    cartProduct.setQuantity(product.getQuantity());
+                    cartProduct.setCartId(cartId);
+                    return cartProduct;
+                })
+                .toList();
     }
 
     private List<CartProductDto> toDtoList(List<CartProduct> cartProducts) {

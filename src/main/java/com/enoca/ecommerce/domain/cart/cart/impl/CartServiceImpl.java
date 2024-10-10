@@ -7,6 +7,7 @@ import com.enoca.ecommerce.domain.cart.cartproduct.api.CartProductService;
 import com.enoca.ecommerce.domain.customer.api.CustomerDto;
 import com.enoca.ecommerce.domain.customer.api.CustomerService;
 import com.enoca.ecommerce.domain.customer.api.event.CustomerCreatedEvent;
+import com.enoca.ecommerce.domain.order.order.api.event.EmptyCartEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -67,6 +68,12 @@ public class CartServiceImpl implements CartService {
                             .build())
                     .build(), new Cart()));
         }
+    }
+
+    @EventListener
+    @Transactional
+    public void emptyCartEvent(EmptyCartEvent event) {
+        emptyCart(event.cartId());
     }
 
     private BigDecimal calculateTotalPrice(List<CartProductDto> cartProducts) {
