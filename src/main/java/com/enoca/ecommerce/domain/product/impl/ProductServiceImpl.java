@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,6 +48,13 @@ public class ProductServiceImpl implements ProductService {
     public void delete(String id) {
         repository.delete(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + id)));
+    }
+
+    @Override
+    public List<ProductDto> getAllById(List<String> productIds) {
+        return repository.findAllById(productIds).stream()
+                .map(this::toDto)
+                .toList();
     }
 
     private void checkProductExist(String sku) {

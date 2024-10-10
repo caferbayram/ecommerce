@@ -25,6 +25,13 @@ public class CustomerServiceImpl implements CustomerService {
         return toDto(customer);
     }
 
+    @Override
+    public CustomerDto getById(String customerId) {
+        return repository.findById(customerId)
+                .map(this::toDto)
+                .orElseThrow(() -> new EntityExistsException("Customer not found with id: " + customerId));
+    }
+
     private void checkCustomerExist(String phoneNumber) {
         if (repository.findByPhoneNumber(phoneNumber).isPresent()) {
             throw new EntityExistsException("Customer already exists with phone number: " + phoneNumber);
