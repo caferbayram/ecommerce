@@ -10,11 +10,11 @@ import java.util.List;
 
 @Data
 public class CartRequest {
-    private List<CartProductRequest> cartProductRequests;
+    private List<CartProductRequest> products;
 
     public CartDto toDto() {
         return CartDto.builder()
-                .products(cartProductRequests.stream()
+                .products(products.stream()
                         .map(req -> CartProductDto.builder()
                                 .quantity(req.getQuantity())
                                 .product(ProductDto.builder()

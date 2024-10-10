@@ -32,8 +32,8 @@ public class CartProductServiceImpl implements CartProductService {
 
     @Override
     @Transactional
-    public void deleteAllByCartId(String id) {
-        repository.deleteAll(repository.findAllByCartId(id));
+    public void deleteAllByCartId(String cartId) {
+        repository.deleteAll(repository.findAllByCartId(cartId));
     }
 
     private CartProduct toEntity(CartProduct cartProduct, CartProductDto dto, String cartId) {

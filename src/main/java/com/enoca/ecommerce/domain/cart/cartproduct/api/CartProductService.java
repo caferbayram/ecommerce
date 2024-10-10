@@ -7,5 +7,5 @@ public interface CartProductService {
 
     List<CartProductDto> updateCartProdcuts(String cartId, List<CartProductDto> products);
 
-    void deleteAllByCartId(String id);
+    void deleteAllByCartId(String cartId);
 }

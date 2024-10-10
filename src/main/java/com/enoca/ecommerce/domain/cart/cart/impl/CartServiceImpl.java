@@ -52,6 +52,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public CartDto emptyCart(String id) {
         var cart = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + id));
