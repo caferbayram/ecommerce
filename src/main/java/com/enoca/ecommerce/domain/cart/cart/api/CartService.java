@@ -5,5 +5,7 @@ public interface CartService {
 
     CartDto getByCustomerId(String customerId);
 
-    CartDto update(String customerId, CartDto dto);
+    CartDto update(String id, CartDto dto);
+
+    CartDto emptyCart(String id);
 }

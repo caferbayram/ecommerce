@@ -44,12 +44,21 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDto update(String customerId, CartDto dto) {
-        var cart = repository.findByCustomerId(customerId)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_CUSTOMER + customerId));
-        var cartProducts = cartProductService.updateCartProdcuts(cart.getId(), dto.getProducts());
-        calculateTotalPrice(cart, cartProducts);
+    public CartDto update(String id, CartDto dto) {
+        var cart = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + id));
+        dto.setProducts(cartProductService.updateCartProdcuts(cart.getId(), dto.getProducts()));
         return toDto(repository.save(toEntity(dto, cart)));
+    }
+
+    @Override
+    public CartDto emptyCart(String id) {
+        var cart = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND + id));
+        cartProductService.deleteAllByCartId(cart.getId());
+        return toDto(repository.save(toEntity(CartDto.builder()
+                .totalPrice(BigDecimal.ZERO)
+                .build(), cart)));
     }
 
     @EventListener
@@ -64,25 +73,30 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    private void calculateTotalPrice(Cart cart, List<CartProductDto> cartProducts) {
-        cart.setTotalPrice(cartProducts.stream()
+    private BigDecimal calculateTotalPrice(List<CartProductDto> cartProducts) {
+        if (cartProducts == null || cartProducts.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return cartProducts.stream()
                 .map(cartProduct -> cartProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(cartProduct.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private CartDto toDto(Cart cart) {
+        var products = cartProductService.getAllByCartId(cart.getId());
         return CartDto.builder()
                 .id(cart.getId())
                 .created(cart.getCreated())
                 .modified(cart.getModified())
-                .totalPrice(cart.getTotalPrice())
+                .totalPrice(calculateTotalPrice(products))
                 .customer(customerService.getById(cart.getCustomerId()))
-                .products(cartProductService.getAllByCartId(cart.getId()))
+                .products(products)
                 .build();
     }
 
     private Cart toEntity(CartDto dto, Cart cart) {
         cart.setCustomerId(dto.getCustomer() != null && StringUtils.hasText(dto.getCustomer().getId()) ? dto.getCustomer().getId() : cart.getCustomerId());
+        cart.setTotalPrice(dto.getProducts() != null ? calculateTotalPrice(dto.getProducts()) : dto.getTotalPrice());
         return cart;
     }
 }

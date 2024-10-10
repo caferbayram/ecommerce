@@ -20,9 +20,14 @@ public class CartController {
         return CartResponse.toResponse(service.getByCustomerId(customerId));
     }
 
-    @PutMapping("/customer/{customerId}")
-    public CartResponse update(@PathVariable String customerId, @RequestBody CartRequest request) {
-        return CartResponse.toResponse(service.update(customerId, request.toDto()));
+    @PutMapping("/{id}")
+    public CartResponse update(@PathVariable String id, @RequestBody CartRequest request) {
+        return CartResponse.toResponse(service.update(id, request.toDto()));
+    }
+
+    @PutMapping("/empty/{id}")
+    public CartResponse emptyCart(@PathVariable String id) {
+        return CartResponse.toResponse(service.emptyCart(id));
     }
 
 }

@@ -6,4 +6,6 @@ public interface CartProductService {
     List<CartProductDto> getAllByCartId(String cartId);
 
     List<CartProductDto> updateCartProdcuts(String cartId, List<CartProductDto> products);
+
+    void deleteAllByCartId(String id);
 }

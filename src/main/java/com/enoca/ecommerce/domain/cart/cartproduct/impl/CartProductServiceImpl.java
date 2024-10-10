@@ -30,6 +30,12 @@ public class CartProductServiceImpl implements CartProductService {
                 .toList());
     }
 
+    @Override
+    @Transactional
+    public void deleteAllByCartId(String id) {
+        repository.deleteAll(repository.findAllByCartId(id));
+    }
+
     private CartProduct toEntity(CartProduct cartProduct, CartProductDto dto, String cartId) {
         cartProduct.setProductId(productService.get(dto.getProduct().getId()).getId());
         cartProduct.setQuantity(dto.getQuantity());
